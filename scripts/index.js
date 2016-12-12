@@ -39,7 +39,7 @@ $(function() {
         'りんご,ごりら,らっぱ',
         'ばなな,らっこ,たいこ',
         'ぱいなっぷる,こあら,ちぇろ'
-    ].join('\n'));
+    ].join('\n')).trigger('autoresize');
 
     $('#btnDownload').click(function() {
         downloadCsv({
@@ -47,4 +47,5 @@ $(function() {
             charset: $('#selectCharset').val()
         });
     });
+
 });
