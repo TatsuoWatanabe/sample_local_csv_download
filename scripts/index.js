@@ -35,6 +35,31 @@ function downloadCsv(param) {
     }
 }
 
+function loadCsv(file, $textBox) {
+    var fileReader = new FileReader();
+
+    fileReader.onload = function() {
+        var arrayBuffer = fileReader.result;
+        // Uint8Array オブジェクトを作成
+        var uint8Array = new Uint8Array(arrayBuffer);
+        var unicodeArray = Encoding.convert(uint8Array, {
+            to: 'UNICODE',
+            from: 'AUTO'
+        });
+        var loadedString = Encoding.codeToString(unicodeArray);
+        var fileCharset  = Encoding.detect(uint8Array);
+        var msg = 'Loaded ' + fileCharset + ' file.';
+        // message for you.
+        console.log(msg, '\n', loadedString);
+
+        $textBox.val(loadedString).trigger('autoresize');
+        Materialize.updateTextFields();
+    };
+
+    // start reading.
+    fileReader.readAsArrayBuffer(file);
+}
+
 $(function() {
     $('select').material_select();
 
@@ -45,11 +70,24 @@ $(function() {
         'ぱいなっぷる,こあら,ちぇろ'
     ].join('\n')).trigger('autoresize');
 
+    // Downloadボタン押下時イベント
     $('#btnDownload').click(function() {
         downloadCsv({
             text   : $('#textarea').val(), 
             charset: $('#selectCharset').val()
         });
+    });
+
+    // Loadボタン押下時イベント
+    $('#btnLoad').click(function() {
+        $('#fileLoad').click();
+    });
+
+    // ファイル選択時イベント
+    $('#fileLoad').change(function(e) {
+        var fileElement = e.target;
+        var selectedFile = fileElement.files[0];
+        loadCsv(selectedFile, $('#textarea'));
     });
 
 });
