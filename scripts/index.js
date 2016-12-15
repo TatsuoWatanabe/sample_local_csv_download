@@ -6,9 +6,13 @@ function downloadCsv(param) {
     var charset = param.charset || 'SJIS';
 
     // 文字コード変換
-    var strArray   = ECL.charset.Unicode.parse(textCsv);
-    var sjisArray  = ECL.charset.convert_array(strArray, charset);
-    var uint8Array = new Uint8Array(sjisArray);
+    var strArray  = Encoding.stringToCode(textCsv);
+    var convertedArray = Encoding.convert(strArray, {
+        to  : charset,
+        from: 'UNICODE',
+        type: 'array'
+    });
+    var uint8Array = new Uint8Array(convertedArray);
 
     // バイナリオブジェクト作成
     var blob = new Blob([uint8Array], {
